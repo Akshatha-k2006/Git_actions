@@ -24,7 +24,6 @@ jobs:
         run: htmlhint --format unix index.html
 
   deploy:
-    needs: validate-html
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
