@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # ✅ opt into Node.js 24
+
 jobs:
   validate-html:
     runs-on: ubuntu-latest
@@ -15,7 +18,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 24   # ✅ use latest
 
       - name: Install HTML validator
         run: npm install -g htmlhint
@@ -24,6 +27,7 @@ jobs:
         run: htmlhint --format unix index.html
 
   deploy:
+    needs: validate-html   # ✅ only run if validation passes
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -31,6 +35,6 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
-        with:                # ✅ must be indented under 'uses'
-          github_token: ${{ secrets.GITHUB_TOKEN }}   # built-in token
-          publish_dir: .                              # directory to publish
+        with:                # ✅ properly indented
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
